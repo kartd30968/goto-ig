@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Redirecting...</title>
+    <script charset="utf-8" src="https://static.line-scdn.net/liff/edge/2/sdk.js"></script>
+</head>
+<body>
+    <p style="text-align: center; margin-top: 50px;">正在前往 Instagram...</p>
+
+    <script>
+        // 1. 設定您的 IG 網址 (請替換成您的實際連結)
+        const myInstagramUrl = "https://www.instagram.com/0_jamie.s_nail_0?igsh=Z3VhbHJwNGY0MGph&utm_source=qr";
+
+        // 2. 初始化 LIFF
+        // 注意：這裡的 liffId 我們等一下會去後台拿，先留空或暫時不填沒關係
+        // 因為我們主要依賴 liff.ready 或直接執行，有些寫法甚至不需要填 ID 也能觸發跳轉，
+        // 但標準做法是初始化。目前這段 code 使用 "自動登入" 邏輯。
+        
+        function redirect() {
+             liff.init({ liffId: "您的_LIFF_ID_等下會拿到" }) 
+            .then(() => {
+                // 3. 核心邏輯：強制用外部瀏覽器 (Safari) 開啟
+                liff.openWindow({
+                    url: myInstagramUrl,
+                    external: true // 這就是 "跳出 LINE 瀏覽器" 的關鍵
+                });
+            })
+            .catch((err) => {
+                // 如果出錯 (例如不在 LINE 裡面)，就直接用普通方式轉址
+                window.location.href = myInstagramUrl;
+            });
+        }
+
+        // 頁面載入後直接執行
+        window.onload = function() {
+            // 如果是在 LINE 以外的地方開 (例如電腦)，直接轉
+            if (!navigator.userAgent.includes("Line")) {
+                window.location.href = myInstagramUrl;
+            } else {
+                // 在 LINE 裡面，嘗試執行 LIFF
+                redirect();
+            }
+        };
+    </script>
+</body>
+</html>
